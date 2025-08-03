@@ -1,10 +1,13 @@
 import migrationRunner from "node-pg-migrate";
 import { join } from "node:path";
+import database from "infra/database";
 
 export default async function migrations(request, response) {
+  const dbClient = await database.getNewClient();
+
   const defaultMigrationsOptions = {
     dryRun: true,
-    databaseUrl: process.env.DATABASE_URL,
+    dbClient: dbClient,
     dir: join("infra", "migrations"),
     direction: "up",
     migrationsTable: "pgmigrations",
@@ -12,18 +15,23 @@ export default async function migrations(request, response) {
   };
 
   if (request.method === "GET") {
-    const migrations = await migrationRunner(defaultMigrationsOptions);
-
-    return response.status(200).json(migrations);
+    const pendingMigrations = await migrationRunner(defaultMigrationsOptions);
+    await dbClient.end();
+    return response.status(200).json(pendingMigrations);
   }
 
   if (request.method === "POST") {
-    const migrations = await migrationRunner({
+    const migratedMigrations = await migrationRunner({
       ...defaultMigrationsOptions,
       dryRun: false,
     });
+    await dbClient.end();
 
-    return response.status(200).json(migrations);
+    if (migratedMigrations.length > 0) {
+      return response.status(201).json(migratedMigrations);
+    }
+
+    return response.status(200).json(migratedMigrations);
   }
 
   return response.status(405).end();
