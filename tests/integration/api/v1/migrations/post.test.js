@@ -6,7 +6,7 @@ async function cleanDatabase() {
 
 beforeAll(cleanDatabase);
 
-test("POST to /api/v1/migrations should return 200", async () => {
+test("POST to /api/v1/migrations should execute pending migrations", async () => {
   const endpointUrl = "http://localhost:3000/api/v1/migrations";
 
   const response1 = await fetch(endpointUrl, {
@@ -28,4 +28,17 @@ test("POST to /api/v1/migrations should return 200", async () => {
 
   expect(Array.isArray(response2Body)).toBe(true);
   expect(response2Body.length).toBe(0);
+});
+
+test("Not allowed methods should return 405", async () => {
+  const endpointUrl = "http://localhost:3000/api/v1/migrations";
+
+  const notAllowedMethods = ["PATCH", "PUT", "DELETE"];
+
+  for (const method of notAllowedMethods) {
+    const response = await fetch(endpointUrl, {
+      method: method,
+    });
+    expect(response.status).toBe(405);
+  }
 });
