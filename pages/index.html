@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Girassol Florescendo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="scene" aria-label="Animação de um girassol florescendo">
+      <!-- Mensagem no céu -->
+      <div class="sky-text" aria-live="polite" aria-label="Mensagem animada">
+        Amo você xuxuzinho
+      </div>
+      <!-- Nuvens decorativas -->
+      <div class="cloud-wrap cloud--a" aria-hidden="true">
+        <div class="cloud"></div>
+      </div>
+      <div class="cloud-wrap cloud--b" aria-hidden="true">
+        <div class="cloud"></div>
+      </div>
+      <div class="cloud-wrap cloud--c" aria-hidden="true">
+        <div class="cloud"></div>
+      </div>
+      <div class="cloud-wrap cloud--d" aria-hidden="true">
+        <div class="cloud"></div>
+      </div>
+      <div class="grass-texture" aria-hidden="true"></div>
+      <div class="texture" aria-hidden="true"></div>
+
+      <svg
+        class="sunflower"
+        viewBox="0 0 300 420"
+        role="img"
+        aria-labelledby="title desc"
+      >
+        <title id="title">Girassol florescendo</title>
+        <desc id="desc">
+          Caule, folhas, pétalas e miolo animados para simular o florescer
+          suave.
+        </desc>
+
+        <!-- Definições de gradientes para evitar preenchimento preto no fim da animação -->
+        <defs>
+          <!-- Gradiente das folhas/caule -->
+          <linearGradient id="leaf-grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#2f7a3b" />
+            <stop offset="1" stop-color="#3f964d" />
+          </linearGradient>
+          <!-- Gradientes das pétalas (alternando levemente para dar volume) -->
+          <linearGradient id="petal-grad" x1="0.5" y1="0" x2="0.5" y2="1">
+            <stop offset="0" stop-color="#ffd34d" />
+            <stop offset="1" stop-color="#e1a609" />
+          </linearGradient>
+          <linearGradient id="petal-grad-alt" x1="0.5" y1="0" x2="0.5" y2="1">
+            <stop offset="0" stop-color="#ffe073" />
+            <stop offset="1" stop-color="#f0b000" />
+          </linearGradient>
+
+          <!-- Texturas e padrões -->
+          <filter
+            id="grain"
+            filterUnits="objectBoundingBox"
+            x="-50%"
+            y="-50%"
+            width="200%"
+            height="200%"
+          >
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.8"
+              numOctaves="2"
+              stitchTiles="stitch"
+              result="noise"
+            />
+            <feColorMatrix
+              type="saturate"
+              values="0"
+              in="noise"
+              result="mono"
+            />
+            <!-- Dá alpha baixo ao ruído -->
+            <feComponentTransfer in="mono" result="soft">
+              <feFuncA type="table" tableValues="0 0 0.06 0" />
+            </feComponentTransfer>
+            <!-- Mascara o ruído para aparecer somente onde há os vetores do girassol -->
+            <feComposite
+              in="soft"
+              in2="SourceAlpha"
+              operator="in"
+              result="masked"
+            />
+            <feBlend in="SourceGraphic" in2="masked" mode="multiply" />
+          </filter>
+
+          <!-- Padrão pontilhado do miolo -->
+          <pattern
+            id="seedPattern"
+            x="0"
+            y="0"
+            width="6"
+            height="6"
+            patternUnits="userSpaceOnUse"
+          >
+            <circle cx="1.5" cy="1.5" r="1.2" fill="#3a2a17" />
+            <circle cx="4.5" cy="4.5" r="1.2" fill="#2a1c0f" />
+          </pattern>
+
+          <!-- Brilho lateral do caule -->
+          <linearGradient id="stem-highlight" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.35" />
+            <stop offset="0.8" stop-color="#ffffff" stop-opacity="0.0" />
+          </linearGradient>
+
+          <!-- Iluminação das folhas: highlight vindo da direita e de cima -->
+          <radialGradient id="leaf-highlight" cx="75%" cy="25%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55" />
+            <stop offset="60%" stop-color="#ffffff" stop-opacity="0.18" />
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+
+        <!-- Sombra no chão -->
+        <ellipse class="shadow" cx="125" cy="385" rx="45" ry="12" />
+
+        <!-- Caule -->
+        <g class="stem">
+          <rect
+            class="stem-core"
+            x="118"
+            y="180"
+            width="14"
+            height="190"
+            rx="7"
+          />
+          <!-- Faixa de brilho estreita à esquerda do caule (cresce junto) -->
+          <!-- <rect
+            class="stem-highlight"
+            x="119"
+            y="182"
+            width="4"
+            height="186"
+            rx="2"
+          /> -->
+
+          <!-- Folhas -->
+          <g class="leaf leaf--left" transform="translate(2,20)">
+            <path
+              d="M95 255 C75 245, 65 225, 85 210 C105 200, 125 210, 118 230 C112 245, 105 252, 95 255 Z"
+            />
+            <!-- Overlay de textura e highlight -->
+            <path
+              class="leaf-grain"
+              d="M95 255 C75 245, 65 225, 85 210 C105 200, 125 210, 118 230 C112 245, 105 252, 95 255 Z"
+            />
+            <path
+              class="leaf-highlight"
+              d="M95 255 C75 245, 65 225, 85 210 C105 200, 125 210, 118 230 C112 245, 105 252, 95 255 Z"
+            />
+          </g>
+          <g class="leaf leaf--right" transform="translate(-18,26)">
+            <path
+              d="M155 295 C180 290, 195 275, 190 255 C182 235, 160 235, 150 250 C142 265, 145 285, 155 295 Z"
+            />
+            <!-- Overlay de textura e highlight -->
+            <path
+              class="leaf-grain"
+              d="M155 295 C180 290, 195 275, 190 255 C182 235, 160 235, 150 250 C142 265, 145 285, 155 295 Z"
+            />
+            <path
+              class="leaf-highlight"
+              d="M155 295 C180 290, 195 275, 190 255 C182 235, 160 235, 150 250 C142 265, 145 285, 155 295 Z"
+            />
+          </g>
+        </g>
+
+        <!-- Flor -->
+        <!-- Observação: movemos o translate para um wrapper para evitar que a animação CSS
+             de 'transform' (sway) sobrescreva a posição (translate) do grupo. -->
+        <g transform="translate(125 180)">
+          <g class="flower">
+            <!-- Cálice (receptáculo) -->
+            <!-- <g class="calyx" aria-hidden="true">
+              <path
+                d="M -18 12 C -10 4, 10 4, 18 12 C 10 18, -10 18, -18 12 Z"
+                fill="url(#leaf-grad)"
+              />
+            </g> -->
+            <!-- Pétalas (12) -->
+            <g class="petals">
+              <!-- Desenho base da pétala -->
+              <!-- Usamos <use> com rotações para formar a coroa -->
+              <defs>
+                <path
+                  id="petal-shape"
+                  d="M0 -70 C14 -46, 14 -18, 0 0 C-14 -18, -14 -46, 0 -70 Z"
+                />
+                <path
+                  id="petal-shape-inner"
+                  d="M0 -56 C12 -40, 12 -16, 0 0 C-12 -16, -12 -40, 0 -56 Z"
+                />
+              </defs>
+              <!-- Instâncias rotacionadas -->
+              <g class="petal-ring">
+                <use href="#petal-shape" transform="rotate(0)" />
+                <use href="#petal-shape" transform="rotate(15)" />
+                <use href="#petal-shape" transform="rotate(30)" />
+                <use href="#petal-shape" transform="rotate(45)" />
+                <use href="#petal-shape" transform="rotate(60)" />
+                <use href="#petal-shape" transform="rotate(75)" />
+                <use href="#petal-shape" transform="rotate(90)" />
+                <use href="#petal-shape" transform="rotate(105)" />
+                <use href="#petal-shape" transform="rotate(120)" />
+                <use href="#petal-shape" transform="rotate(135)" />
+                <use href="#petal-shape" transform="rotate(150)" />
+                <use href="#petal-shape" transform="rotate(165)" />
+                <use href="#petal-shape" transform="rotate(180)" />
+                <use href="#petal-shape" transform="rotate(195)" />
+                <use href="#petal-shape" transform="rotate(210)" />
+                <use href="#petal-shape" transform="rotate(225)" />
+                <use href="#petal-shape" transform="rotate(240)" />
+                <use href="#petal-shape" transform="rotate(255)" />
+                <use href="#petal-shape" transform="rotate(270)" />
+                <use href="#petal-shape" transform="rotate(285)" />
+                <use href="#petal-shape" transform="rotate(300)" />
+                <use href="#petal-shape" transform="rotate(315)" />
+                <use href="#petal-shape" transform="rotate(330)" />
+                <use href="#petal-shape" transform="rotate(345)" />
+              </g>
+
+              <!-- Segunda coroa (menor) para volume -->
+              <g class="petal-ring petal-ring--inner">
+                <use href="#petal-shape-inner" transform="rotate(7.5)" />
+                <use href="#petal-shape-inner" transform="rotate(22.5)" />
+                <use href="#petal-shape-inner" transform="rotate(37.5)" />
+                <use href="#petal-shape-inner" transform="rotate(52.5)" />
+                <use href="#petal-shape-inner" transform="rotate(67.5)" />
+                <use href="#petal-shape-inner" transform="rotate(82.5)" />
+                <use href="#petal-shape-inner" transform="rotate(97.5)" />
+                <use href="#petal-shape-inner" transform="rotate(112.5)" />
+                <use href="#petal-shape-inner" transform="rotate(127.5)" />
+                <use href="#petal-shape-inner" transform="rotate(142.5)" />
+                <use href="#petal-shape-inner" transform="rotate(157.5)" />
+                <use href="#petal-shape-inner" transform="rotate(172.5)" />
+                <use href="#petal-shape-inner" transform="rotate(187.5)" />
+                <use href="#petal-shape-inner" transform="rotate(202.5)" />
+                <use href="#petal-shape-inner" transform="rotate(217.5)" />
+                <use href="#petal-shape-inner" transform="rotate(232.5)" />
+                <use href="#petal-shape-inner" transform="rotate(247.5)" />
+                <use href="#petal-shape-inner" transform="rotate(262.5)" />
+                <use href="#petal-shape-inner" transform="rotate(277.5)" />
+                <use href="#petal-shape-inner" transform="rotate(292.5)" />
+                <use href="#petal-shape-inner" transform="rotate(307.5)" />
+                <use href="#petal-shape-inner" transform="rotate(322.5)" />
+                <use href="#petal-shape-inner" transform="rotate(337.5)" />
+              </g>
+            </g>
+
+            <!-- Miolo -->
+            <g class="center">
+              <circle r="36" cx="0" cy="0" class="disk" />
+              <circle r="24" cx="0" cy="0" class="disk disk--inner" />
+              <circle
+                r="34"
+                cx="0"
+                cy="0"
+                class="seed-pattern"
+                fill="url(#seedPattern)"
+                opacity=".35"
+              />
+            </g>
+          </g>
+        </g>
+      </svg>
+    </main>
+  </body>
+</html>
