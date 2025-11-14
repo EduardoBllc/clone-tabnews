@@ -14,7 +14,7 @@ const PATTERNS = [
   { label: "AWS secret key literal", regex: /aws_secret_access_key/i },
   { label: "Client secret literal", regex: /client_secret/i },
   { label: "API key literal", regex: /api_key/i },
-  { label: "Secret key literal", regex: /secret_key/i }
+  { label: "Secret key literal", regex: /secret_key/i },
 ];
 
 const args = process.argv.slice(2);
@@ -26,9 +26,7 @@ function run(command) {
 
 function gatherTargets() {
   if (options.staged) {
-    const stagedList = run(
-      "git diff --cached --name-only --diff-filter=ACMRT"
-    )
+    const stagedList = run("git diff --cached --name-only --diff-filter=ACMRT")
       .split("\n")
       .filter(Boolean)
       .filter((path) => path !== "infra/scripts/secret-scan.js");
@@ -74,7 +72,12 @@ function scan(targets) {
       while ((match = matcher.exec(content)) !== null) {
         const snippet = match[0];
         const position = getLineColumn(content, match.index);
-        findings.push({ label, path, line: position.line, column: position.column });
+        findings.push({
+          label,
+          path,
+          line: position.line,
+          column: position.column,
+        });
 
         if (snippet.length === 0) {
           matcher.lastIndex += 1;
@@ -116,11 +119,15 @@ function main() {
   const findings = scan(targets);
 
   if (findings.length > 0) {
-    console.error("\nERROR secret scan blocked due to potential sensitive data.\n");
+    console.error(
+      "\nERROR secret scan blocked due to potential sensitive data.\n",
+    );
     findings.forEach(({ label, path, line, column }) => {
       console.error(`- ${label} in ${path} ${line}:${column}`);
     });
-    console.error("\nPlease remove or secure these secrets before continuing.\n");
+    console.error(
+      "\nPlease remove or secure these secrets before continuing.\n",
+    );
     process.exit(1);
   }
 }
