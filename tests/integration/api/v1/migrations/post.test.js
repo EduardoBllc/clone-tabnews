@@ -1,33 +1,40 @@
-import database from "infra/database.js";
 import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
-  await database.query("drop schema public cascade; create schema public;");
+  await orchestrator.clearDatabase();
 });
 
-test("POST to /api/v1/migrations should execute pending migrations", async () => {
-  const endpointUrl = "http://localhost:3000/api/v1/migrations";
+describe("POST /api/v1/migrations", () => {
+  describe("Anonymous user", () => {
+    describe("Running pending migrations", () => {
+      test("For the first time", async () => {
+        const endpointUrl = "http://localhost:3000/api/v1/migrations";
+        const response1 = await fetch(endpointUrl, {
+          method: "POST",
+        });
+        expect(response1.status).toBe(201);
 
-  const response1 = await fetch(endpointUrl, {
-    method: "POST",
+        const response1Body = await response1.json();
+
+        expect(Array.isArray(response1Body)).toBe(true);
+        expect(response1Body.length).toBeGreaterThan(0);
+      });
+
+      test("For the second time", async () => {
+        const endpointUrl = "http://localhost:3000/api/v1/migrations";
+        const response2 = await fetch(endpointUrl, {
+          method: "POST",
+        });
+        expect(response2.status).toBe(200);
+
+        const response2Body = await response2.json();
+
+        expect(Array.isArray(response2Body)).toBe(true);
+        expect(response2Body.length).toBe(0);
+      });
+    });
   });
-  expect(response1.status).toBe(201);
-
-  const response1Body = await response1.json();
-
-  expect(Array.isArray(response1Body)).toBe(true);
-  expect(response1Body.length).toBeGreaterThan(0);
-
-  const response2 = await fetch(endpointUrl, {
-    method: "POST",
-  });
-  expect(response2.status).toBe(200);
-
-  const response2Body = await response2.json();
-
-  expect(Array.isArray(response2Body)).toBe(true);
-  expect(response2Body.length).toBe(0);
 });
 
 test("Not allowed methods should return 405", async () => {
