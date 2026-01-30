@@ -10,12 +10,6 @@ const createJestConfig = nextJest({
 const jestConifg = createJestConfig({
   moduleDirectories: ["node_modules", "<rootDir>"],
   testTimeout: 60000,
-  watchPathIgnorePatterns: [
-    "<rootDir>/node_modules/",
-    "<rootDir>/.next/",
-    "<rootDir>/.git/",
-  ],
-  watchman: false,
 });
 
 module.exports = jestConifg;
