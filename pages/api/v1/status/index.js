@@ -33,7 +33,7 @@ async function getHandler(request, response) {
   const databaseOpenedConnections =
     databaseActualConnectionsQuery.rows[0].qtd_conexoes;
 
-  response.status(200).json({
+  return response.status(200).json({
     updated_at: updatedAt,
     dependencies: {
       database: {
