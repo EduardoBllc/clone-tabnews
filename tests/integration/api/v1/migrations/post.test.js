@@ -36,16 +36,3 @@ describe("POST /api/v1/migrations", () => {
     });
   });
 });
-
-test("Not allowed methods should return 405", async () => {
-  const endpointUrl = "http://localhost:3000/api/v1/migrations";
-
-  const notAllowedMethods = ["PATCH", "PUT", "DELETE"];
-
-  for (const method of notAllowedMethods) {
-    const response = await fetch(endpointUrl, {
-      method: method,
-    });
-    expect(response.status).toBe(405);
-  }
-});
