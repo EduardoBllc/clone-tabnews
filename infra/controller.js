@@ -11,7 +11,7 @@ function onErrorHandler(error, request, response) {
     statusCode: error.statusCode,
   });
 
-  console.log("\n Erro dentro do catch do controller:");
+  console.log("\n  Erro dentro do catch do controller:");
   console.error(publicErrorObject);
 
   response.status(publicErrorObject.statusCode).json(publicErrorObject);
