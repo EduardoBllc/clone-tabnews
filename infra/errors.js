@@ -56,3 +56,21 @@ export class MethodNotAllowedError extends Error {
     };
   }
 }
+
+export class ValidationError extends Error {
+  constructor({ message, action }) {
+    super(message || "Houve um erro de validação.");
+    this.name = "ValidationError";
+    this.action = action || "Revise os campos enviados";
+    this.statusCode = 400;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
+}
