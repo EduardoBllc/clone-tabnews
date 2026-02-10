@@ -1,0 +1,103 @@
+import { version as uuidVersion } from "uuid";
+import orchestrator from "tests/orchestrator.js";
+
+beforeAll(async () => {
+  await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
+  await orchestrator.runPendingMigrations();
+});
+
+describe("GET /api/v1/users/[username]", () => {
+  describe("Anonymous user", () => {
+    test("Whith exact case match", async () => {
+      const response1 = await fetch("http://localhost:3000/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: "MesmoCase",
+          email: "mesmo.case@gmail.com",
+          password: "senha1234",
+        }),
+      });
+
+      expect(response1.status).toBe(201);
+
+      const response2 = await fetch(
+        "http://localhost:3000/api/v1/users/MesmoCase",
+      );
+
+      expect(response2.status).toBe(200);
+
+      const reponse2Body = await response2.json();
+
+      expect(reponse2Body).toEqual({
+        id: reponse2Body.id,
+        username: "MesmoCase",
+        email: "mesmo.case@gmail.com",
+        password: "senha1234",
+        created_at: reponse2Body.created_at,
+        updated_at: reponse2Body.updated_at,
+      });
+
+      expect(uuidVersion(reponse2Body.id)).toBe(4);
+      expect(Date.parse(reponse2Body.created_at)).not.toBeNaN();
+      expect(Date.parse(reponse2Body.updated_at)).not.toBeNaN();
+    });
+
+    test("Whith case mismatch", async () => {
+      const response1 = await fetch("http://localhost:3000/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: "CaseDiferente",
+          email: "case.diferente@gmail.com",
+          password: "senha1234",
+        }),
+      });
+
+      expect(response1.status).toBe(201);
+
+      const response2 = await fetch(
+        "http://localhost:3000/api/v1/users/casediferente",
+      );
+
+      expect(response2.status).toBe(200);
+
+      const reponse2Body = await response2.json();
+
+      expect(reponse2Body).toEqual({
+        id: reponse2Body.id,
+        username: "CaseDiferente",
+        email: "case.diferente@gmail.com",
+        password: "senha1234",
+        created_at: reponse2Body.created_at,
+        updated_at: reponse2Body.updated_at,
+      });
+
+      expect(uuidVersion(reponse2Body.id)).toBe(4);
+      expect(Date.parse(reponse2Body.created_at)).not.toBeNaN();
+      expect(Date.parse(reponse2Body.updated_at)).not.toBeNaN();
+    });
+
+    test("Whith nonexistant username", async () => {
+      const response = await fetch(
+        "http://localhost:3000/api/v1/users/UsuarioInexistente",
+      );
+
+      expect(response.status).toBe(404);
+
+      const reponseBody = await response.json();
+
+      expect(reponseBody).toEqual({
+        name: "NotFoundError",
+        message: "O username informado não foi encontrado no sistema.",
+        action: "Verifique se o username foi digitado corretamente",
+        status_code: 404,
+      });
+    });
+  });
+});
