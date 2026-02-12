@@ -30,7 +30,7 @@ async function listPendingMigrations() {
     });
     throw serviceErrorObject;
   } finally {
-    await dbClient.end();
+    await dbClient?.end();
   }
 }
 
