@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 describe("POST /api/v1/users", () => {
   describe("Anonymous user", () => {
-    test("Whith unique and valid data", async () => {
+    test("With unique and valid data", async () => {
       const response = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -54,7 +54,7 @@ describe("POST /api/v1/users", () => {
       expect(correctPasswordMatch).toBe(true);
     });
 
-    test("Whith same email", async () => {
+    test("With duplicated email", async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -86,7 +86,7 @@ describe("POST /api/v1/users", () => {
       expect(response2Body).toEqual({
         name: "ValidationError",
         message: "O email informado já está sendo utilizado.",
-        action: "Utilize outro email para realizar o cadastro.",
+        action: "Utilize outro email para realizar esta operação.",
         status_code: 400,
       });
 
@@ -108,12 +108,12 @@ describe("POST /api/v1/users", () => {
       expect(response3Body).toEqual({
         name: "ValidationError",
         message: "O nome de usuário informado já está sendo utilizado.",
-        action: "Utilize outro nome de usuário para realizar o cadastro.",
+        action: "Utilize outro nome de usuário para realizar esta operação.",
         status_code: 400,
       });
     });
 
-    test("Whith same username", async () => {
+    test("With duplicated username", async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -145,7 +145,7 @@ describe("POST /api/v1/users", () => {
       expect(response2Body).toEqual({
         name: "ValidationError",
         message: "O nome de usuário informado já está sendo utilizado.",
-        action: "Utilize outro nome de usuário para realizar o cadastro.",
+        action: "Utilize outro nome de usuário para realizar esta operação.",
         status_code: 400,
       });
     });

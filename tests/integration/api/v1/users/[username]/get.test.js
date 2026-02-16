@@ -9,7 +9,7 @@ beforeAll(async () => {
 
 describe("GET /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
-    test("Whith exact case match", async () => {
+    test("With exact case match", async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -46,7 +46,7 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(reponse2Body.updated_at)).not.toBeNaN();
     });
 
-    test("Whith case mismatch", async () => {
+    test("With case mismatch", async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -83,7 +83,7 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
     });
 
-    test("Whith nonexistant username", async () => {
+    test("With nonexistant username", async () => {
       const response = await fetch(
         "http://localhost:3000/api/v1/users/UsuarioInexistente",
       );
