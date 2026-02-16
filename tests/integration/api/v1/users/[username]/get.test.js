@@ -9,7 +9,7 @@ beforeAll(async () => {
 
 describe("GET /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
-    test("Whith exact case match", async () => {
+    test("With exact case match", async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -36,7 +36,7 @@ describe("GET /api/v1/users/[username]", () => {
         id: reponse2Body.id,
         username: "MesmoCase",
         email: "mesmo.case@gmail.com",
-        password: "senha1234",
+        password: reponse2Body.password,
         created_at: reponse2Body.created_at,
         updated_at: reponse2Body.updated_at,
       });
@@ -46,7 +46,7 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(reponse2Body.updated_at)).not.toBeNaN();
     });
 
-    test("Whith case mismatch", async () => {
+    test("With case mismatch", async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -67,23 +67,23 @@ describe("GET /api/v1/users/[username]", () => {
 
       expect(response2.status).toBe(200);
 
-      const reponse2Body = await response2.json();
+      const response2Body = await response2.json();
 
-      expect(reponse2Body).toEqual({
-        id: reponse2Body.id,
+      expect(response2Body).toEqual({
+        id: response2Body.id,
         username: "CaseDiferente",
         email: "case.diferente@gmail.com",
-        password: "senha1234",
-        created_at: reponse2Body.created_at,
-        updated_at: reponse2Body.updated_at,
+        password: response2Body.password,
+        created_at: response2Body.created_at,
+        updated_at: response2Body.updated_at,
       });
 
-      expect(uuidVersion(reponse2Body.id)).toBe(4);
-      expect(Date.parse(reponse2Body.created_at)).not.toBeNaN();
-      expect(Date.parse(reponse2Body.updated_at)).not.toBeNaN();
+      expect(uuidVersion(response2Body.id)).toBe(4);
+      expect(Date.parse(response2Body.created_at)).not.toBeNaN();
+      expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
     });
 
-    test("Whith nonexistant username", async () => {
+    test("With nonexistant username", async () => {
       const response = await fetch(
         "http://localhost:3000/api/v1/users/UsuarioInexistente",
       );
