@@ -165,7 +165,7 @@ async function findOneByEmail(email) {
       FROM
         users
       WHERE
-        LOWER(email) = LOWER($1)
+        email = $1
       LIMIT
         1
       ;`,
