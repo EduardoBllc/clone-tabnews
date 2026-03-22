@@ -184,6 +184,7 @@ async function findOneByEmail(email) {
 }
 
 const user = {
+  findOneByEmail,
   findOneByUsername,
   create,
   update,
