@@ -3,6 +3,7 @@ import {
   MethodNotAllowedError,
   ValidationError,
   NotFoundError,
+  UnauthorizedError,
 } from "infra/errors.js";
 
 function onNoMatchHandler(request, response) {
@@ -11,17 +12,16 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
-  if (error instanceof NotFoundError) {
-    return response.status(error.statusCode).json(error);
-  }
-
-  if (error instanceof ValidationError) {
+  if (
+    error instanceof NotFoundError ||
+    error instanceof ValidationError ||
+    error instanceof UnauthorizedError
+  ) {
     return response.status(error.statusCode).json(error);
   }
 
   const publicErrorObject = new InternalServerError({
     cause: error,
-    statusCode: error.statusCode,
   });
 
   console.log("\n Erro dentro do catch do controller:");
